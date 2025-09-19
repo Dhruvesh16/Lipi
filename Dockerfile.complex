@@ -1,0 +1,54 @@
+# Multi-stage build for Lipi Medical Transcription Platform
+FROM node:18-alpine AS base
+
+# Install dependencies only when needed
+FROM base AS deps
+RUN apk add --no-cache libc6-compat python3 make g++
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+
+# Install all dependencies first, then prune
+RUN npm ci
+RUN npm prune --production
+
+# Rebuild the source code only when needed
+FROM base AS builder
+WORKDIR /app
+COPY package*.json ./
+# Install all dependencies including dev dependencies for building
+RUN npm ci
+COPY . .
+
+# Build the application
+RUN npm run build
+
+# Production image, copy all the files and run the app
+FROM base AS runner
+WORKDIR /app
+
+ENV NODE_ENV production
+ENV PORT 5000
+
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 lipi
+
+# Copy built application
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/client/dist ./client/dist
+COPY --from=builder /app/package*.json ./
+
+# Copy production dependencies from deps stage
+COPY --from=deps /app/node_modules ./node_modules
+
+# Create necessary directories
+RUN mkdir -p /app/uploads && chown lipi:nodejs /app/uploads
+
+USER lipi
+
+EXPOSE 5000
+
+ENV HOSTNAME "0.0.0.0"
+
+CMD ["node", "dist/index.js"]

@@ -5,13 +5,23 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { 
+  AlertDialog, 
+  AlertDialogAction, 
+  AlertDialogContent, 
+  AlertDialogDescription, 
+  AlertDialogFooter, 
+  AlertDialogHeader, 
+  AlertDialogTitle 
+} from "@/components/ui/alert-dialog";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Eye, EyeOff, ArrowLeft } from "lucide-react";
-import { useState } from "react";
+import { Eye, EyeOff, ArrowLeft, CheckCircle, AlertCircle } from "lucide-react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
+import { userStore } from "@/lib/userStore";
 
 const loginSchema = z.object({
   userType: z.enum(["doctor", "patient"], { required_error: "Please select user type" }),
@@ -26,68 +36,20 @@ export default function Login() {
   const [, navigate] = useLocation();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+  const [showErrorDialog, setShowErrorDialog] = useState(false);
+  const [dialogMessage, setDialogMessage] = useState("");
+  const [successUserName, setSuccessUserName] = useState("");
 
-  // Sample doctor accounts - in a real app, this would come from your API
-  const sampleDoctors = [
-    { 
-      id: "doc1", 
-      email: "sarah.johnson@hospital.com",
-      password: "doctor123",
-      name: "Dr. Sarah Johnson", 
-      specialty: "Cardiology",
-      license: "MD12345"
-    },
-    { 
-      id: "doc2", 
-      email: "michael.chen@hospital.com",
-      password: "doctor123",
-      name: "Dr. Michael Chen", 
-      specialty: "Internal Medicine",
-      license: "MD12346"
-    },
-    { 
-      id: "doc3", 
-      email: "emily.rodriguez@hospital.com",
-      password: "doctor123",
-      name: "Dr. Emily Rodriguez", 
-      specialty: "Pediatrics",
-      license: "MD12347"
-    }
-  ];
+  // Initialize userStore on component mount
+  useEffect(() => {
+    userStore.initialize();
+  }, []);
 
-  // Sample patient accounts - in a real app, this would come from your API
-  const samplePatients = [
-    { 
-      id: "pat1", 
-      email: "john.smith@email.com",
-      password: "patient123",
-      name: "John Smith", 
-      age: 45, 
-      mrn: "MRN001",
-      dateOfBirth: "1979-03-15",
-      phone: "+1-555-0123"
-    },
-    { 
-      id: "pat2", 
-      email: "maria.garcia@email.com",
-      password: "patient123",
-      name: "Maria Garcia", 
-      age: 32, 
-      mrn: "MRN002",
-      dateOfBirth: "1992-07-22",
-      phone: "+1-555-0124"
-    },
-    { 
-      id: "pat3", 
-      email: "robert.johnson@email.com",
-      password: "patient123",
-      name: "Robert Johnson", 
-      age: 67, 
-      mrn: "MRN003",
-      dateOfBirth: "1957-11-08",
-      phone: "+1-555-0125"
-    }
-  ];
+  // Get sample users for demo credentials display
+  const demoCredentials = userStore.getDemoCredentials();
+  const sampleDoctors = demoCredentials.doctors;
+  const samplePatients = demoCredentials.patients;
 
   const form = useForm<LoginForm>({
     resolver: zodResolver(loginSchema),
@@ -109,46 +71,39 @@ export default function Login() {
     setIsLoading(true);
     
     try {
-      let authenticatedUser = null;
-      
-      if (data.userType === "doctor") {
-        // Find doctor by email and validate password
-        authenticatedUser = sampleDoctors.find(d => 
-          d.email === data.email && d.password === data.password
-        );
-        
-        if (authenticatedUser) {
-          // Store doctor info in sessionStorage for dashboard
-          sessionStorage.setItem('userType', 'doctor');
-          sessionStorage.setItem('currentUser', JSON.stringify(authenticatedUser));
-        }
-      } else if (data.userType === "patient") {
-        // Find patient by email and validate password
-        authenticatedUser = samplePatients.find(p => 
-          p.email === data.email && p.password === data.password
-        );
-        
-        if (authenticatedUser) {
-          // Store patient info in sessionStorage for dashboard
-          sessionStorage.setItem('userType', 'patient');
-          sessionStorage.setItem('currentUser', JSON.stringify(authenticatedUser));
-        }
-      }
+      // Use userStore to authenticate (await the async function)
+      const authenticatedUser = await userStore.authenticate(data.email, data.password, data.userType);
       
       if (authenticatedUser) {
-        await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate API call
-        navigate("/dashboard");
+        // Store user info in sessionStorage for dashboard
+        sessionStorage.setItem('userType', authenticatedUser.userType);
+        sessionStorage.setItem('currentUser', JSON.stringify(authenticatedUser));
+        
+        // Simulate API call delay
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        
+        // Show success dialog
+        setSuccessUserName(authenticatedUser.name);
+        setShowSuccessDialog(true);
       } else {
-        // Authentication failed
-        console.error('Invalid credentials');
-        // In a real app, you'd show an error message to the user
-        alert('Invalid email or password. Please try again.');
+        // Authentication failed - show error dialog
+        setDialogMessage(
+          `Invalid ${data.userType === "doctor" ? "doctor" : "patient"} credentials. Please check your email and password and try again.`
+        );
+        setShowErrorDialog(true);
       }
     } catch (error) {
       console.error('Login error:', error);
+      setDialogMessage("An unexpected error occurred during login. Please try again later.");
+      setShowErrorDialog(true);
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleSuccessDialogClose = () => {
+    setShowSuccessDialog(false);
+    navigate("/dashboard");
   };
 
   const handleGoogleLogin = () => {
@@ -205,12 +160,12 @@ export default function Login() {
               <div className="grid grid-cols-1 gap-2">
                 <div>
                   <p className="font-medium">Doctor:</p>
-                  <p>Email: sarah.johnson@hospital.com</p>
+                  <p>Email: {sampleDoctors[0]?.email || "sarah.johnson@hospital.com"}</p>
                   <p>Password: doctor123</p>
                 </div>
                 <div>
                   <p className="font-medium">Patient:</p>
-                  <p>Email: john.smith@email.com</p>
+                  <p>Email: {samplePatients[0]?.email || "john.smith@email.com"}</p>
                   <p>Password: patient123</p>
                 </div>
               </div>
@@ -358,6 +313,53 @@ export default function Login() {
           <p>We use industry-standard security to protect your medical information</p>
         </div>
       </div>
+
+      {/* Success Dialog */}
+      <AlertDialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <div className="flex items-center space-x-2">
+              <CheckCircle className="w-6 h-6 text-green-500" />
+              <AlertDialogTitle>Login Successful!</AlertDialogTitle>
+            </div>
+            <AlertDialogDescription>
+              Welcome back, {successUserName}! You have been successfully logged in.
+              Redirecting you to your dashboard...
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogAction 
+              onClick={handleSuccessDialogClose}
+              className="bg-green-600 hover:bg-green-700"
+            >
+              Continue to Dashboard
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Error Dialog */}
+      <AlertDialog open={showErrorDialog} onOpenChange={setShowErrorDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <div className="flex items-center space-x-2">
+              <AlertCircle className="w-6 h-6 text-red-500" />
+              <AlertDialogTitle>Login Failed</AlertDialogTitle>
+            </div>
+            <AlertDialogDescription>
+              {dialogMessage}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogAction 
+              onClick={() => setShowErrorDialog(false)}
+              className="bg-red-600 hover:bg-red-700"
+            >
+              Try Again
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

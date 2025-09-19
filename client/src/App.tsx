@@ -8,6 +8,7 @@ import Home from "@/pages/Home";
 import Login from "@/pages/Login";
 import Signup from "@/pages/Signup";
 import DashboardPage from "@/pages/DashboardPage";
+import OPDRecording from "@/pages/OPDRecording";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -17,6 +18,7 @@ function Router() {
       <Route path="/login" component={Login} />
       <Route path="/signup" component={Signup} />
       <Route path="/dashboard" component={DashboardPage} />
+      <Route path="/opd-recording" component={OPDRecording} />
       {/* Fallback to 404 */}
       <Route component={NotFound} />
     </Switch>
