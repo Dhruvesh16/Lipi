@@ -117,7 +117,16 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-blue-950 to-indigo-950 relative overflow-hidden flex items-center justify-center p-4">
+      {/* Animated background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-900/40 via-indigo-900/30 to-slate-900/20"></div>
+      <div className="absolute inset-0 bg-grid-pattern opacity-20 animate-[grid-move_20s_ease-in-out_infinite]"></div>
+      
+      {/* Enhanced floating particles */}
+      <div className="absolute top-20 left-20 w-80 h-80 bg-gradient-to-r from-blue-500/20 to-indigo-500/15 rounded-full blur-3xl animate-float"></div>
+      <div className="absolute bottom-20 right-20 w-96 h-96 bg-gradient-to-r from-indigo-500/25 to-blue-500/20 rounded-full blur-3xl animate-[float_15s_ease-in-out_infinite_reverse]"></div>
+      <div className="absolute top-1/2 left-1/4 w-40 h-40 bg-gradient-to-r from-sky-500/15 to-blue-500/10 rounded-full blur-2xl animate-pulse-slow"></div>
+      <div className="absolute top-1/3 right-1/3 w-32 h-32 bg-gradient-to-r from-blue-400/10 to-indigo-400/10 rounded-full blur-xl animate-[float_12s_ease-in-out_infinite]"></div>
       {/* Theme Toggle - Top Right */}
       <div className="absolute top-4 right-4 z-10">
         <ThemeToggle />
@@ -129,9 +138,9 @@ export default function Login() {
         <div className="absolute bottom-0 right-0 w-72 h-72 bg-primary/5 rounded-full blur-3xl"></div>
       </div>
 
-      <div className="w-full max-w-md space-y-6">
+      <div className="w-full max-w-md space-y-6 relative z-10">
         {/* Back to Home */}
-        <Link href="/" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground transition-colors" data-testid="link-back-home">
+        <Link href="/" className="inline-flex items-center text-sm text-blue-300 hover:text-white transition-all duration-300 backdrop-blur-sm hover:bg-white/5 px-3 py-2 rounded-lg" data-testid="link-back-home">
           <ArrowLeft className="w-4 h-4 mr-2" />
           Back to Home
         </Link>
@@ -139,34 +148,34 @@ export default function Login() {
         {/* Logo */}
         <div className="text-center">
           <div className="flex justify-center mb-4">
-            <div className="h-12 w-12 rounded-lg bg-gradient-to-r from-primary to-primary/70 flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-2xl">L</span>
+            <div className="h-14 w-14 rounded-xl bg-gradient-to-r from-blue-500 via-indigo-500 to-blue-600 flex items-center justify-center shadow-2xl shadow-blue-500/30 ring-2 ring-white/20">
+              <span className="text-white font-bold text-2xl drop-shadow-lg">L</span>
             </div>
           </div>
-          <h1 className="text-2xl font-bold">Welcome back to Lipi</h1>
-          <p className="text-muted-foreground">Sign in to your medical scribe platform</p>
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-300 via-indigo-300 to-sky-300 bg-clip-text text-transparent">Welcome back to Lipi</h1>
+          <p className="text-gray-300 mt-2">Sign in to your medical scribe platform</p>
         </div>
 
-        <Card className="border-0 shadow-lg">
+        <Card className="border-0 shadow-2xl bg-gradient-to-br from-slate-900/60 to-blue-900/40 backdrop-blur-xl border border-blue-500/20 ring-1 ring-white/10">
           <CardHeader className="space-y-1">
-            <CardTitle className="text-center">Sign In</CardTitle>
-            <CardDescription className="text-center">
+            <CardTitle className="text-center text-white text-xl">Sign In</CardTitle>
+            <CardDescription className="text-center text-gray-300">
               Enter your credentials to access your dashboard
             </CardDescription>
             
             {/* Demo Credentials */}
-            <div className="bg-muted/50 p-3 rounded-lg text-xs space-y-2">
-              <p className="font-medium text-center">Demo Credentials:</p>
-              <div className="grid grid-cols-1 gap-2">
-                <div>
-                  <p className="font-medium">Doctor:</p>
-                  <p>Email: {sampleDoctors[0]?.email || "sarah.johnson@hospital.com"}</p>
-                  <p>Password: doctor123</p>
+            <div className="bg-gradient-to-r from-blue-900/30 to-indigo-900/30 backdrop-blur-sm p-4 rounded-xl text-xs space-y-3 border border-blue-400/20 ring-1 ring-white/5">
+              <p className="font-medium text-center text-blue-300 text-sm">✨ Demo Credentials:</p>
+              <div className="grid grid-cols-1 gap-3">
+                <div className="bg-blue-900/20 p-2 rounded-lg border border-blue-400/20">
+                  <p className="font-medium text-blue-300">👨‍⚕️ Doctor:</p>
+                  <p className="text-gray-200 text-xs">Email: {demoCredentials.doctors[0]?.email}</p>
+                  <p className="text-gray-200 text-xs">Password: doctor123</p>
                 </div>
-                <div>
-                  <p className="font-medium">Patient:</p>
-                  <p>Email: {samplePatients[0]?.email || "john.smith@email.com"}</p>
-                  <p>Password: patient123</p>
+                <div className="bg-indigo-900/20 p-2 rounded-lg border border-indigo-400/20">
+                  <p className="font-medium text-indigo-300">👤 Patient:</p>
+                  <p className="text-gray-200 text-xs">Email: {demoCredentials.patients[0]?.email}</p>
+                  <p className="text-gray-200 text-xs">Password: patient123</p>
                 </div>
               </div>
             </div>
@@ -175,7 +184,7 @@ export default function Login() {
             {/* Google Sign In */}
             <Button 
               variant="outline" 
-              className="w-full" 
+              className="w-full bg-gradient-to-r from-slate-800/60 to-blue-800/60 border-blue-400/30 hover:from-slate-700/70 hover:to-blue-700/70 text-white backdrop-blur-sm transition-all duration-300 hover:scale-[1.02] hover:shadow-lg hover:shadow-blue-500/20" 
               onClick={handleGoogleLogin}
               data-testid="button-google-login"
             >
@@ -190,33 +199,34 @@ export default function Login() {
 
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
-                <Separator className="w-full" />
+                <Separator className="w-full border-blue-500/30" />
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-card px-2 text-muted-foreground">Or continue with email</span>
+                <span className="bg-gradient-to-r from-slate-900 to-blue-900 px-3 py-1 rounded-full text-blue-300 font-medium">Or continue with email</span>
               </div>
             </div>
 
             {/* Login Form */}
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
               <div className="space-y-2">
-                <Label htmlFor="email">Email Address</Label>
+                <Label htmlFor="email" className="text-blue-300 font-medium">Email Address</Label>
                 <Input
                   id="email"
                   type="email"
                   placeholder="doctor@hospital.com"
                   {...form.register("email")}
                   data-testid="input-email"
+                  className="bg-gradient-to-r from-slate-800/60 to-blue-900/40 border-blue-400/30 text-white placeholder:text-gray-300 focus:border-blue-400 focus:ring-blue-400/20 backdrop-blur-sm transition-all duration-300 hover:from-slate-700/70 hover:to-blue-800/50"
                 />
                 {form.formState.errors.email && (
-                  <p className="text-sm text-destructive" data-testid="error-email">
+                  <p className="text-sm text-red-400" data-testid="error-email">
                     {form.formState.errors.email.message}
                   </p>
                 )}
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password" className="text-blue-300 font-medium">Password</Label>
                 <div className="relative">
                   <Input
                     id="password"
@@ -224,12 +234,13 @@ export default function Login() {
                     placeholder="Enter your password"
                     {...form.register("password")}
                     data-testid="input-password"
+                    className="bg-gradient-to-r from-slate-800/60 to-blue-900/40 border-blue-400/30 text-white placeholder:text-gray-300 focus:border-blue-400 focus:ring-blue-400/20 backdrop-blur-sm pr-10 transition-all duration-300 hover:from-slate-700/70 hover:to-blue-800/50"
                   />
                   <Button
                     type="button"
                     variant="ghost"
                     size="sm"
-                    className="absolute right-0 top-0 h-full px-3 hover:bg-transparent"
+                    className="absolute right-0 top-0 h-full px-3 hover:bg-blue-600/20 text-gray-300 hover:text-blue-300 transition-all duration-300"
                     onClick={() => setShowPassword(!showPassword)}
                     data-testid="button-toggle-password"
                   >
@@ -237,7 +248,7 @@ export default function Login() {
                   </Button>
                 </div>
                 {form.formState.errors.password && (
-                  <p className="text-sm text-destructive" data-testid="error-password">
+                  <p className="text-sm text-red-400" data-testid="error-password">
                     {form.formState.errors.password.message}
                   </p>
                 )}
@@ -245,24 +256,24 @@ export default function Login() {
 
               {/* User Type Selection */}
               <div className="space-y-2">
-                <Label htmlFor="userType">I am a</Label>
+                <Label htmlFor="userType" className="text-blue-300 font-medium">I am a</Label>
                 <Controller
                   name="userType"
                   control={form.control}
                   render={({ field }) => (
                     <Select onValueChange={field.onChange} value={field.value}>
-                      <SelectTrigger data-testid="select-user-type">
-                        <SelectValue placeholder="Select user type" />
+                      <SelectTrigger data-testid="select-user-type" className="bg-gradient-to-r from-slate-800/60 to-blue-900/40 border-blue-400/30 text-white focus:border-blue-400 focus:ring-blue-400/20 backdrop-blur-sm transition-all duration-300 hover:from-slate-700/70 hover:to-blue-800/50">
+                        <SelectValue placeholder="Select user type" className="text-gray-300" />
                       </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="doctor">Doctor / Healthcare Provider</SelectItem>
-                        <SelectItem value="patient">Patient</SelectItem>
+                      <SelectContent className="bg-gradient-to-br from-slate-900 to-blue-900 border-blue-400/30 text-white backdrop-blur-xl">
+                        <SelectItem value="doctor" className="focus:bg-blue-800/30 focus:text-blue-300 transition-all duration-200">👨‍⚕️ Doctor / Healthcare Provider</SelectItem>
+                        <SelectItem value="patient" className="focus:bg-indigo-800/30 focus:text-indigo-300 transition-all duration-200">👤 Patient</SelectItem>
                       </SelectContent>
                     </Select>
                   )}
                 />
                 {form.formState.errors.userType && (
-                  <p className="text-sm text-destructive" data-testid="error-user-type">
+                  <p className="text-sm text-red-400" data-testid="error-user-type">
                     {form.formState.errors.userType.message}
                   </p>
                 )}
@@ -275,12 +286,13 @@ export default function Login() {
                     checked={form.watch("rememberMe")}
                     onCheckedChange={(checked) => form.setValue("rememberMe", !!checked)}
                     data-testid="checkbox-remember"
+                    className="border-blue-400/50 text-blue-400 focus:ring-blue-400/20 data-[state=checked]:bg-gradient-to-r data-[state=checked]:from-blue-500 data-[state=checked]:to-indigo-500"
                   />
-                  <Label htmlFor="remember" className="text-sm">Remember me</Label>
+                  <Label htmlFor="remember" className="text-sm text-gray-200 font-medium">Remember me</Label>
                 </div>
                 <button
                   type="button"
-                  className="px-0 font-normal text-primary hover:underline bg-transparent border-none cursor-pointer"
+                  className="px-0 font-medium text-blue-400 hover:text-blue-300 hover:underline bg-transparent border-none cursor-pointer transition-all duration-300 hover:scale-105"
                   onClick={handleForgotPassword}
                   data-testid="button-forgot-password"
                 >
@@ -290,39 +302,49 @@ export default function Login() {
 
               <Button 
                 type="submit" 
-                className="w-full" 
+                className="w-full bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 hover:from-blue-500 hover:via-indigo-500 hover:to-blue-600 text-white border-0 shadow-2xl shadow-blue-500/30 font-semibold py-3 transition-all duration-300 hover:scale-[1.02] hover:shadow-blue-500/20" 
                 disabled={isLoading}
                 data-testid="button-sign-in"
               >
-                {isLoading ? "Signing in..." : "Sign In"}
+                {isLoading ? (
+                  <span className="flex items-center space-x-2">
+                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                    <span>Signing in...</span>
+                  </span>
+                ) : (
+                  "Sign In ✨"
+                )}
               </Button>
             </form>
 
             <div className="text-center text-sm">
-              <span className="text-muted-foreground">Don't have an account? </span>
-              <Link href="/signup" className="text-primary hover:underline" data-testid="link-sign-up">
-                Sign up
+              <span className="text-gray-300">Don't have an account? </span>
+              <Link href="/signup" className="text-blue-400 hover:text-blue-300 hover:underline font-medium transition-all duration-300 hover:scale-105" data-testid="link-sign-up">
+                Sign up ✨
               </Link>
             </div>
           </CardContent>
         </Card>
 
         {/* Security Notice */}
-        <div className="text-center text-xs text-muted-foreground bg-muted/30 p-4 rounded-lg">
-          <p>🔒 Your data is encrypted and HIPAA compliant</p>
-          <p>We use industry-standard security to protect your medical information</p>
+        <div className="text-center text-sm bg-gradient-to-r from-blue-900/20 to-indigo-900/20 backdrop-blur-sm p-4 rounded-xl border border-blue-400/20 ring-1 ring-white/5">
+          <div className="flex items-center justify-center space-x-2 mb-2">
+            <div className="w-3 h-3 bg-gradient-to-r from-blue-400 to-indigo-400 rounded-full animate-pulse shadow-lg shadow-blue-400/50"></div>
+            <p className="text-blue-300 font-medium">🔒 Your data is encrypted and HIPAA compliant</p>
+          </div>
+          <p className="text-gray-300">We use industry-standard security to protect your medical information</p>
         </div>
       </div>
 
       {/* Success Dialog */}
       <AlertDialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
-        <AlertDialogContent>
+        <AlertDialogContent className="bg-slate-900 border border-green-500/20 backdrop-blur-xl">
           <AlertDialogHeader>
             <div className="flex items-center space-x-2">
-              <CheckCircle className="w-6 h-6 text-green-500" />
-              <AlertDialogTitle>Login Successful!</AlertDialogTitle>
+              <CheckCircle className="w-6 h-6 text-green-400" />
+              <AlertDialogTitle className="text-white">Login Successful!</AlertDialogTitle>
             </div>
-            <AlertDialogDescription>
+            <AlertDialogDescription className="text-gray-300">
               Welcome back, {successUserName}! You have been successfully logged in.
               Redirecting you to your dashboard...
             </AlertDialogDescription>
@@ -330,7 +352,7 @@ export default function Login() {
           <AlertDialogFooter>
             <AlertDialogAction 
               onClick={handleSuccessDialogClose}
-              className="bg-green-600 hover:bg-green-700"
+              className="bg-gradient-to-r from-green-600 to-green-500 hover:from-green-700 hover:to-green-600 text-white border-0"
             >
               Continue to Dashboard
             </AlertDialogAction>
@@ -340,26 +362,75 @@ export default function Login() {
 
       {/* Error Dialog */}
       <AlertDialog open={showErrorDialog} onOpenChange={setShowErrorDialog}>
-        <AlertDialogContent>
+        <AlertDialogContent className="bg-slate-900 border border-red-500/20 backdrop-blur-xl">
           <AlertDialogHeader>
             <div className="flex items-center space-x-2">
-              <AlertCircle className="w-6 h-6 text-red-500" />
-              <AlertDialogTitle>Login Failed</AlertDialogTitle>
+              <AlertCircle className="w-6 h-6 text-red-400" />
+              <AlertDialogTitle className="text-white">Login Failed</AlertDialogTitle>
             </div>
-            <AlertDialogDescription>
+            <AlertDialogDescription className="text-gray-300">
               {dialogMessage}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogAction 
               onClick={() => setShowErrorDialog(false)}
-              className="bg-red-600 hover:bg-red-700"
+              className="bg-gradient-to-r from-red-600 to-red-500 hover:from-red-700 hover:to-red-600 text-white border-0"
             >
               Try Again
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <style dangerouslySetInnerHTML={{
+        __html: `
+          .bg-grid-pattern {
+            background-image: 
+              linear-gradient(rgba(59, 130, 246, 0.1) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(79, 70, 229, 0.1) 1px, transparent 1px);
+            background-size: 60px 60px;
+          }
+          
+          @keyframes grid-move {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(60px, 60px); }
+          }
+          
+          @keyframes float {
+            0%, 100% { 
+              transform: translateY(0px) rotate(0deg) scale(1); 
+              opacity: 0.7;
+            }
+            50% { 
+              transform: translateY(-30px) rotate(180deg) scale(1.1); 
+              opacity: 1;
+            }
+          }
+          
+          @keyframes pulse-slow {
+            0%, 100% { 
+              opacity: 0.4; 
+              transform: scale(1);
+            }
+            50% { 
+              opacity: 0.9; 
+              transform: scale(1.05);
+            }
+          }
+          
+          @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+          }
+          
+          .shimmer {
+            background: linear-gradient(110deg, transparent 40%, rgba(255, 255, 255, 0.1) 50%, transparent 60%);
+            background-size: 200% 100%;
+            animation: shimmer 3s infinite;
+          }
+        `
+      }} />
     </div>
   );
 }
